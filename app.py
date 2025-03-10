@@ -137,10 +137,16 @@ def Complaints():
 	if request.method=='GET':
 		return render_template('complaints.html',form=form)
 	if request.method=='POST' and form.validate():
-		complaint=Complaint(category=form.category.data)
-		session.add(complaint)
-		session.commit()
-		return render_template('complaints.html',form=form)
+		category=session.query(Category).filter_by(_id=form.id.data).first()
+		if category:
+			message="Category already exist"
+			return render_template('complaints.html',form=form,message=message)
+		else:
+			message="Category successfully added"
+			complaint=Complaint(category=form.category.data)
+			session.add(complaint)
+			session.commit()
+			return render_template('complaints.html',form=form,message=message)
 
 ############################################################################################################################################
 

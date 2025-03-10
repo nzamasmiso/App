@@ -17,6 +17,9 @@
 				{% endfor %}
 			</il>
 		{% endif %}
+		{% if message %}
+				<p class="error">{{error}}</p>p>
+		{% endif %}
 		<br></br>
 		<button type="submit">Submit</button>
 	</form>

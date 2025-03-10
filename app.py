@@ -75,7 +75,7 @@ def Register():
 		return render_template('Register.html',form=form)
 	if request.method=='POST' and form.validate():
 		id=session.query(Student).filter_by(_id=form.id.data).first()
-		email=form.email.data==session.query(Student).filter_by(_email=form.email.data).first()
+		email=session.query(Student).filter_by(_email=form.email.data).first()
 		if id or email:
 			message="Email or ID already exists"
 			return render_template('Register.html',form=form,message=message)
@@ -95,7 +95,10 @@ def Register():
 def Dashboard():
 	session=Session()
 	if request.method=='GET':
-		students=session.query(Student).all()
+		students=session.query(StudentComplaint).all()
+		output=[]
+		for student in students:
+			###
 		return  render_template('Dashboard.html',output=students)
 
 #######################################################################################################################################
@@ -159,10 +162,14 @@ def department():
 			return render_template('Departments.html',form=form,message=message)
 		else:	
 			category=session.query(Category).join(Department).filter(Department._id==form.id.data).first()
-			department=Department(name=form.name.data,id=form.id.data,category=form.category.data,email=form.email.data,password=generate_password_hash(form.password.data))
-			session.add(department)
-			session.commit()
-			return render_template('Departments.html',form=form)
+			if category:
+				department=Department(name=form.name.data,id=form.id.data,category=category,email=form.email.data,password=generate_password_hash(form.password.data))
+				session.add(department)
+				session.commit()
+				return render_template('Departments.html',form=form)
+			else:
+				message="Invalid Category"
+				return render_template('Departments.html',form=form)
 #############################################################################################################################################
 
 @app.route('/Students_Complaints',methods=['GET','POST'])
@@ -172,10 +179,15 @@ def StudentComplaints():
 	if request.method=='GET':
 		return render_template('Students_Complaints.html',form=form)	
 	if request.method=='POST' and form.validate():
-		studentcomplaint=StudentComplain(sid=form.sid.data,deptcode=form.deptcode.data,category,description=form.description.data,complain=form.complaint.data)
-		session.add(studentcomplaint)
-		session.commit()
-		return render_template('Dashboard.html')
+		category=session.query(Category).join(Department).filter(Department._id==form.id.data).first()
+		if category:
+			studentcomplaint=StudentComplain(sid=form.sid.data,deptcode=form.deptcode.data,category=category,description=form.description.data,complain=form.complaint.data)
+			session.add(studentcomplaint)
+			session.commit()
+			return render_template('Dashboard.html')
+		else:
+			message="Invalid Category"
+			return render_template('Students_Complaints.html',form=form,message=message)
 
 if __name__=='__main__':
 	app.run(debug=True)

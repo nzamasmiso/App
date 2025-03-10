@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Submit Your Complaints</title>
+</head>
+<body>
+	<form action="/Students_Complaints" method="post">
+		{{form.csrf_token}}
+		
+		{{form.sid.label}} {{form.sid()}}
+		{% if form.sid.errors %}
+			<ul class="errors">
+				{% for error in form.sid.errors %}
+					<li>{{error}}</li>
+				{% endfor %}
+			</ul>
+		{% endif %}  
+		<br></br>
+                {{form.deptcode.label}} {{form.deptcode()}}
+                {% if form.deptcode.errors %}
+                        <ul class="errors">
+                                {% for error in form.deptcode.errors %}
+                                        <li>{{error}}</li>
+                                {% endfor %}
+                        </ul>
+                {% endif %}
+		<br></br>
+                {{form.description.label}}<br></br> {{form.description(rows=5, cols=100)}}
+                {% if form.description.errors %}
+                        <ul class="errors">
+                                {% for error in form.description.errors %}
+                                        <li>{{error}}</li>
+                                {% endfor %}
+                        </ul>
+                {% endif %}
+		<br></br>
+                {{form.complaint.label}}<br></br> {{form.complaint(rows=20,cols=100)}}
+                {% if form.complaint.errors %}
+                        <ul class="errors">
+                                {% for error in form.complaint.errors %}
+                                        <li>{{error}}</li>
+                                {% endfor %}
+                        </ul>
+                {% endif %}
+		
+		<button type="submit">Submit</button>
+	</form>
+</body>
+</html>
